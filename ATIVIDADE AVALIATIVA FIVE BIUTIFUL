@@ -1,0 +1,312 @@
+CREATE TABLE Compra
+(
+ID						INT NOT NULL,
+Data_Compra				DATETIME NOT NULL,
+Valor_Total				DECIMAL (10,2) NOT NULL,
+CNPJ_Fornecedor			VARCHAR (20) NOT NULL,
+CONSTRAINT PK_Compra PRIMARY KEY (ID),
+CONSTRAINT FK_Fornecedor_Compra FOREIGN KEY (CNPJ_Fornecedor) 
+REFERENCES Fornecedor (CNPJ)
+);
+
+INSERT INTO Compra
+VALUES (1000, '01/03/1998', 123.25, '00.000.000/0001-91'),
+(1001, '02/02/1988', 150.69, '08.973.889/0001-03'),
+(1002, '15/11/1960', 1500.32, '23.925.806/0001-96')
+
+SELECT* FROM dbo.Compra
+
+
+
+CREATE TABLE M_Prima
+(
+ID						INT NOT NULL,
+NOME					VARCHAR (50) NOT NULL,
+UltimaCompra			DATETIME NOT NULL,
+DataCadastro			DATETIME NOT NULL,
+Situacao				VARCHAR (20) NOT NULL,
+
+CONSTRAINT PK_M_Prima PRIMARY KEY (ID)
+);
+
+INSERT INTO M_Prima
+VALUES (0001, 'Glicerina', '01/03/2022', '01/03/1999', 'ESTOQUE')
+
+select* from M_Prima
+
+
+CREATE TABLE Venda
+(
+ID						INT NOT NULL,
+DataVenda				DATETIME NOT NULL,
+ValotTotal				DECIMAL (10,2) NOT NULL,
+CPF_Cliente				VARCHAR (20) NOT NULL,
+
+CONSTRAINT PK_Venda PRIMARY KEY (ID),
+CONSTRAINT FK_CPF_Cliente_Venda FOREIGN KEY (CPF_Cliente)
+REFERENCES Cliente(CPF)
+);
+
+ATIVIDADE AVALIATIVA FIVE BIUTIFU
+
+
+SELECT* FROM Venda
+
+
+
+CREATE TABLE Fornecedor
+(
+CNPJ					VARCHAR (20) NOT NULL,
+Razao_Social			VARCHAR (50)NOT NULL,
+Data_Abertura			DATETIME NOT NULL,
+Ultima_Compra			DATETIME NOT NULL,
+Data_Cadastro			DATETIME NOT NULL,
+Situacao				VARCHAR (20) NOT NULL,
+
+CONSTRAINT PK_Fornecedor PRIMARY KEY (CNPJ),
+);
+
+INSERT INTO Fornecedor
+VALUES ('00.000.000/0001-91', 'Trocaki Ltda', '20/05/1997', '23/03/2022', '20/05/1997', 'ATIVO' ),
+('08.973.889/0001-03', 'Petty Embalagens Ltda', '15/04/1986', '22/03/2022', '15/04/1986', 'ATIVO'),
+('86.483.401/0001-65', 'COJIBA SM', '15/03/1986', '23/03/2022', '15/03/1986', 'ATIVO')
+
+select* from dbo.Fornecedor
+
+
+
+CREATE TABLE Item_Compra
+(
+ID						INT NOT NULL,
+Quantidade				DECIMAL (10,2) NOT NULL,
+Valor_Unitario			DECIMAL (10,2) NOT NULL,
+Total_Item				DECIMAL (10,2) NOT NULL,
+ID_Compra				INT NOT NULL,
+ID_M_Prima				INT NOT NULL,
+
+CONSTRAINT PK_ID_Item_Compra PRIMARY KEY (ID),
+
+CONSTRAINT FK_ID_Compra_Item_Compra FOREIGN KEY (ID_Compra)
+REFERENCES Compra(ID),
+
+CONSTRAINT FK_ID_M_Prima_Item_Compra FOREIGN KEY (ID_M_Prima)
+REFERENCES M_Prima (ID)
+);
+
+CREATE TABLE Cliente
+(
+CPF						VARCHAR (20) NOT NULL,
+Nome					VARCHAR (50) NOT NULL,
+Data_Nasc				DATETIME NOT NULL,
+Sexo					VARCHAR (20) NOT NULL,
+Ultima_Compra			DATETIME NOT NULL,
+Data_Cadastro			DATETIME NOT NULL,
+Situacao				VARCHAR (20) NOT NULL,
+
+
+CONSTRAINT PK_Cliente PRIMARY KEY (CPF),
+);
+
+
+CREATE TABLE Item_Producao
+(
+Quant_Materia_Prima		DECIMAL (10,2),
+ID_M_Prima				INT NOT NULL,
+ID_Producao				INT NOT NULL,
+
+CONSTRAINT PK_Item_Producao PRIMARY KEY (ID_Producao),
+CONSTRAINT FK_Item_Producao FOREIGN KEY (ID_Producao)
+REFERENCES Producao (ID)
+);
+
+
+CREATE TABLE Produto
+(
+Cod_Barras				VARCHAR(20) NOT NULL,
+Nome					VARCHAR (50),
+Valor_Venda				DECIMAL  (10,2),
+Ultima_Venda			DATETIME,
+Data_Cadastro			DATETIME,
+Situacao				VARCHAR (20),
+
+CONSTRAINT PK_Produto PRIMARY KEY (Cod_Barras)
+);
+
+CREATE TABLE Producao
+(
+ID						INT NOT NULL,
+Data_Producao			DATETIME,
+Quantidade				DECIMAL (10,2),
+Cod_Barras_Produto		VARCHAR(20) NOT NULL,
+
+CONSTRAINT PK_Producao PRIMARY KEY (ID),
+CONSTRAINT FK_Produto_Producao FOREIGN KEY (Cod_Barras_Produto)
+REFERENCES Produto (Cod_Barras),
+);
+
+CREATE TABLE Item_Venda
+(
+ID_Venda				INT NOT NULL,
+Quantidade				DECIMAL (10,2),
+ValorUnitario			DECIMAL (10,2),
+TotalItem				DECIMAL (10,2),
+Cod_Barras_Produto		VARCHAR (20),
+
+
+CONSTRAINT PK_Item_Venda PRIMARY KEY (ID_Venda),
+CONSTRAINT FK_Venda_Item_Venda FOREIGN KEY (ID_Venda)
+REFERENCES Venda (ID),
+CONSTRAINT FK_Cod_Barras_Item_Venda FOREIGN KEY (Cod_Barras_Produto)
+REFERENCES Produto (Cod_Barras)
+);
+
+CREATE TABLE Bloqueado
+(
+CNPJ_Fornecedor			VARCHAR (20) NOT NULL,
+
+CONSTRAINT PK_Bloqueado PRIMARY KEY (CNPJ_Fornecedor),
+CONSTRAINT FK_Bloqueado_Fornecedor FOREIGN KEY (CNPJ_Fornecedor)
+REFERENCES Fornecedor(CNPJ)
+);
+
+
+CREATE TABLE Risco
+(
+CPF_Cliente				VARCHAR (20) NOT NULL,
+
+CONSTRAINT PK_Risco PRIMARY KEY (CPF_Cliente),
+CONSTRAINT PK_Risco_Cliente FOREIGN KEY (CPF_Cliente)
+REFERENCES Cliente(CPF)
+);
+
+GO
+CREATE PROCEDURE INSERIR_Fornecedor_PROC
+	@CNPJ				VARCHAR (20) NOT NULL,
+	@Razao_Social		VARCHAR (50) NOT NULL,
+	@Data_Abertura		DATETIME NOT NULL
+AS
+BEGIN
+	INSERT INTO Fornecedor (CNPJ, Razao_Social, Data_Abertura)
+	VALUES (@CNPJ, @Razao_Social, @Data_Abertura)
+END
+
+
+
+CREATE PROCEDURE INSERIR_Cliente_PROC
+	@CPF				VARCHAR(20) NOT NULL,
+	@Nome				VARCHAR(50) NOT NULL,
+	@Data_Nasc			DATETIME NOT NULL,
+	@Sexo				VARCHAR (20) NOT NULL
+AS
+BEGIN
+	INSERT INTO Cliente (CPF, Nome, Data_Nasc, Sexo)
+	VALUES (@CPF, @Nome, @Data_Nasc, @Sexo)
+END
+
+
+	GO
+CREATE PROCEDURE INSERIR_Produto_PROC
+	@Nome				 VARCHAR(50) NOT NULL,
+	@Valor_Venda		 DECIMAL (10,2) NOT NULL,
+	
+AS
+BEGIN
+	INSERT INTO Produto(Nome, Valor_Venda)
+	VALUES (@Nome, @Valor_Venda)
+END
+
+
+CREATE PROCEDURE INSERIR_Compra_PROC
+	@Valor_Total		DECIMAL(10,2),
+	@CNPJ_Fornecedor	VARCHAR(20)
+AS
+BEGIN
+	INSERT INTO Compra (Valor_Total, CNPJ_Fornecedor)
+	VALUES(@Valor_Total, @CNPJ_Fornecedor)
+END
+
+
+GO
+	CREATE PROCEDURE INSERIR_MPrima_PROC
+	@ID					INT NOT NULL,
+	@NOME				 VARCHAR (50) NOT NULL,
+AS
+BEGIN
+	INSERT INTO MPrima (ID, NOME)
+	VALUES (@ID, @NOME)
+END
+
+
+CREATE PROCEDURE INSERIR_Venda_PROC
+	@Valor_Total		DECIMAL(10,2),
+	@CPF_Cliente		VARCHAR(20)
+AS
+BEGIN
+	INSERT INTO Venda_CLIENTE(Valor_Total, CPF_Cliente)
+	VALUES (@Valor_Total, @CPF_Cliente)
+END
+
+
+CREATE PROCEDURE INSERIR_Item_Compra_PROC
+	@Quantidade			DECIMAL (10,2) NOT NULL,
+	@Valor_Unitario		DECIMAL(10,2) NOT NULL,
+	@Total_Item			 DECIMAL(10,2) NOT NULL
+AS
+BEGIN
+	INSERT INTO Item_Compra(Quantidade, Valor_Unitario, Total_Item)
+	VALUES (@Quantidade, @Valor_Unitario, @Total_Item)
+END
+
+
+CREATE PROCEDURE INSERIR_Producao_PROC
+	@Quantidade			DECIMAL (10,2),
+	@Cod_Barras_Produto VARCHAR (20)
+AS
+BEGIN
+	INSERT INTO Producao(Quantidade, Cod_Barras_Produto)
+	VALUES(@Quantidade, @Cod_Barras_Produto)
+END
+
+
+
+CREATE PROCEDURE INSERIR_Item_Producao_PROC
+	@ID_PRODUCAO		INT,
+	@ID_M_Prima			INT,
+	@Quant_Materia_Prima DECIMAL (10,2)
+AS
+BEGIN
+	INSERT INTO ITEM_Producao(ID_Producao, ID_M_Prima, Quant_Materia_Prima)
+	VALUES (@ID_Producao, @ID_M_Prima, @Quant_Materia_Prima)
+END
+
+
+
+CREATE PROCEDURE INSERIR_Item_Venda_PROC
+	@ID_Venda			INT,
+	@Quantidade			DECIMAL(10,2),
+	@ValorUnitario		DECIMAL(10,2),
+	@Total_Item			DECIMAL(10,2),
+	@Cod_Barras_Produto VARCHAR (20)
+AS
+BEGIN
+	INSERT INTO Item_Venda(ID_Venda, Quantidade, ValorUnitario, Total_Item, Cod_Barras_Produto)
+	VALUES (@ID_Venda, @Quantidade, @ValorUnitario, @Total_Item, @Cod_Barras_Produto)
+END
+
+
+CREATE PROCEDURE INSERIR_Risco_PROC
+	@CPF_Cliente		VARCHAR(20)
+AS
+BEGIN
+	INSERT INTO Risco(CPF_Cliente)
+	VALUES (@CPF_Clinte)
+END
+
+
+CREATE PROCEDURE INSERIR_Bloqueado_PROC
+	@CNPJ_Fornecedor	VARCHAR(20)
+AS
+BEGIN
+	INSERT INTO Bloqueado(CNPJ_Fornecedor)
+	VALUES (@CNPJ_Fornecedor)
+END
