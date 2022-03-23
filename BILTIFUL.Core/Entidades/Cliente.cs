@@ -8,7 +8,7 @@ namespace BILTIFUL.Core.Entidades
 
         public string CPF { get; set; }
         public string Nome { get; set; }
-        public DateTime DataNascimento { get; set; }
+        public DateTime DataNasc { get; set; }
         public Sexo Sexo { get; set; }
         public DateTime UltimaCompra { get; set; } = DateTime.Now;
         public DateTime DataCadastro { get; set; } = DateTime.Now;
@@ -28,7 +28,7 @@ namespace BILTIFUL.Core.Entidades
         {
             this.CPF = cpf;
             this.Nome = nome;
-            this.DataNascimento = dnascimento;
+            this.DataNasc = dnascimento;
             this.Sexo = sexo;
             this.Situacao = Situacao;
         }
@@ -37,7 +37,7 @@ namespace BILTIFUL.Core.Entidades
         {
             this.CPF = cpf;
             this.Nome = nome;
-            this.DataNascimento = dnascimento;
+            this.DataNasc = dnascimento;
             this.Sexo = sexo;
             this.UltimaCompra = ucompra;
             this.DataCadastro = dcadastro;
@@ -47,11 +47,11 @@ namespace BILTIFUL.Core.Entidades
 
         public string ConverterParaEDI()
         {
-            return $"{CPF}{Nome.PadRight(50).Substring(0, 50)}{DataNascimento.ToString("dd/MM/yyyy")}{(char)Sexo}{UltimaCompra.ToString("dd/MM/yyyy")}{DataCadastro.ToString("dd/MM/yyyy")}{(char)Situacao}";
+            return $"{CPF}{Nome.PadRight(50).Substring(0, 50)}{DataNasc.ToString("dd/MM/yyyy")}{(char)Sexo}{UltimaCompra.ToString("dd/MM/yyyy")}{DataCadastro.ToString("dd/MM/yyyy")}{(char)Situacao}";
         }
         public string DadosCliente()
         {
-            return "-------------------------------------------\n|Nome: " + Nome + "\n|CPF: " + CPF + "\n|Data de nascimento: " + DataNascimento.ToString("dd/MM/yyyy") + "\n|Sexo: " + Sexo + "\n|Ultima compra: " + UltimaCompra.ToString("dd/MM/yyyy") + "\n|Data de cadastro: " + DataCadastro.ToString("dd/MM/yyyy") + "\n|Situação: " + Situacao;
+            return "-------------------------------------------\n|Nome: " + Nome + "\n|CPF: " + CPF + "\n|Data de nascimento: " + DataNasc.ToString("dd/MM/yyyy") + "\n|Sexo: " + Sexo + "\n|Ultima compra: " + UltimaCompra.ToString("dd/MM/yyyy") + "\n|Data de cadastro: " + DataCadastro.ToString("dd/MM/yyyy") + "\n|Situação: " + Situacao;
         }
 
         public string VendasCliente()
